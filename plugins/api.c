@@ -51,6 +51,7 @@
 #include "loader.h"
 #endif
 #endif
+#include "exec/log.h"
 
 /* Uninstall and Reset handlers */
 
@@ -393,6 +394,12 @@ int qemu_plugin_n_max_vcpus(void)
 void qemu_plugin_outs(const char *string)
 {
     qemu_log_mask(CPU_LOG_PLUGIN, "%s", string);
+}
+
+void qemu_dump_cpu_state(void)
+{
+    if (qemu_loglevel_mask(CPU_LOG_PLUGIN))
+        log_cpu_state(current_cpu, 0);
 }
 
 bool qemu_plugin_bool_parse(const char *name, const char *value, bool *ret)

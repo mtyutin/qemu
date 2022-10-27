@@ -579,6 +579,11 @@ int qemu_plugin_n_max_vcpus(void);
 void qemu_plugin_outs(const char *string);
 
 /**
+ * qemu_dump_cpu_state() - output current CPU state via QEMU's logging system
+  */
+void qemu_dump_cpu_state(void);
+
+/**
  * qemu_plugin_bool_parse() - parses a boolean argument in the form of
  * "<argname>=[on|yes|true|off|no|false]"
  *
