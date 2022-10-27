@@ -399,7 +399,7 @@ void qemu_plugin_outs(const char *string)
 void qemu_dump_cpu_state(void)
 {
     if (qemu_loglevel_mask(CPU_LOG_PLUGIN))
-        log_cpu_state(current_cpu, 0);
+        log_cpu_state(current_cpu, CPU_DUMP_FPU);
 }
 
 bool qemu_plugin_bool_parse(const char *name, const char *value, bool *ret)
