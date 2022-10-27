@@ -36,6 +36,8 @@ bool qemu_log_separate(void);
 #define LOG_STRACE         (1 << 19)
 #define LOG_PER_THREAD     (1 << 20)
 
+#define LOG_TIMER          (1 << 21)
+
 /* Lock/unlock output. */
 
 FILE *qemu_log_trylock(void) G_GNUC_WARN_UNUSED_RESULT;

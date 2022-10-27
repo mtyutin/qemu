@@ -26,6 +26,7 @@
 #include "hw/i386/apic.h"
 #include "hw/i386/apic_internal.h"
 #include "trace.h"
+#include "exec/log.h"
 #include "hw/boards.h"
 #include "sysemu/hax.h"
 #include "sysemu/kvm.h"
@@ -186,6 +187,8 @@ bool apic_next_timer(APICCommonState *s, int64_t current_time)
     }
     s->next_time = s->initial_count_load_time + (d << s->count_shift);
     s->timer_expiry = s->next_time;
+
+    qemu_log_mask(LOG_TIMER, "APIC update timer=%p curr=%ld next=%ld interval=%ld\n", s, current_time, s->next_time, s->next_time-current_time);
     return true;
 }
 

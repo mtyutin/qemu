@@ -400,6 +400,35 @@ void qemu_plugin_vcpu_resume_cb(CPUState *cpu)
     plugin_vcpu_cb__simple(cpu, QEMU_PLUGIN_EV_VCPU_RESUME);
 }
 
+
+inline static void qemu_plugin_vcpu_interrupt_cb(CPUState *cpu, enum qemu_plugin_event ev, int intno, int is_hw)
+{
+    struct qemu_plugin_cb *cb, *next;
+
+    switch (ev) {
+    case QEMU_PLUGIN_EV_VCPU_INTERRUPT_ENTER:
+    case QEMU_PLUGIN_EV_VCPU_INTERRUPT_LEAVE:
+        QLIST_FOREACH_SAFE_RCU(cb, &plugin.cb_lists[ev], entry, next) {
+            qemu_plugin_vcpu_interrupt_cb_t func = cb->f.vcpu_interrupt;
+
+            func(cpu->cpu_index, intno, is_hw);
+        }
+        break;
+    default:
+        g_assert_not_reached();
+    }
+}
+
+void qemu_plugin_vcpu_interrupt_enter_cb(CPUState *cpu, int intno, int is_hw)
+{
+    qemu_plugin_vcpu_interrupt_cb(cpu, QEMU_PLUGIN_EV_VCPU_INTERRUPT_ENTER, intno, is_hw);
+}
+
+void qemu_plugin_vcpu_interrupt_leave_cb(CPUState *cpu, int intno, int is_hw)
+{
+    qemu_plugin_vcpu_interrupt_cb(cpu, QEMU_PLUGIN_EV_VCPU_INTERRUPT_LEAVE, intno, is_hw);
+}
+
 void qemu_plugin_register_vcpu_idle_cb(qemu_plugin_id_t id,
                                        qemu_plugin_vcpu_simple_cb_t cb)
 {
@@ -410,6 +439,18 @@ void qemu_plugin_register_vcpu_resume_cb(qemu_plugin_id_t id,
                                          qemu_plugin_vcpu_simple_cb_t cb)
 {
     plugin_register_cb(id, QEMU_PLUGIN_EV_VCPU_RESUME, cb);
+}
+
+void qemu_plugin_register_vcpu_interrupt_enter_cb(qemu_plugin_id_t id,
+                                                  qemu_plugin_vcpu_interrupt_cb_t cb)
+{
+    plugin_register_cb(id, QEMU_PLUGIN_EV_VCPU_INTERRUPT_ENTER, cb);
+}
+
+void qemu_plugin_register_vcpu_interrupt_leave_cb(qemu_plugin_id_t id,
+                                                  qemu_plugin_vcpu_interrupt_cb_t cb)
+{
+    plugin_register_cb(id, QEMU_PLUGIN_EV_VCPU_INTERRUPT_LEAVE, cb);
 }
 
 void qemu_plugin_register_flush_cb(qemu_plugin_id_t id,

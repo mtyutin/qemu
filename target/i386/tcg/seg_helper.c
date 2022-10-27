@@ -1115,6 +1115,9 @@ void do_interrupt_all(X86CPU *cpu, int intno, int is_int,
             count++;
         }
     }
+
+    qemu_plugin_vcpu_interrupt_enter_cb(&cpu->parent_obj, intno, is_hw);
+
     if (env->cr[0] & CR0_PE_MASK) {
 #if !defined(CONFIG_USER_ONLY)
         if (env->hflags & HF_GUEST_MASK) {
@@ -1151,6 +1154,8 @@ void do_interrupt_all(X86CPU *cpu, int intno, int is_int,
                  event_inj & ~SVM_EVTINJ_VALID);
     }
 #endif
+
+    qemu_plugin_vcpu_interrupt_leave_cb(&cpu->parent_obj, intno, is_hw);
 }
 
 void do_interrupt_x86_hardirq(CPUX86State *env, int intno, int is_hw)

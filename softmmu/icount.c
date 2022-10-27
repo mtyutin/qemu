@@ -39,6 +39,7 @@
 #include "sysemu/cpu-timers.h"
 #include "sysemu/cpu-throttle.h"
 #include "timers-state.h"
+#include "exec/log.h"
 
 /*
  * ICOUNT: Instruction Counter
@@ -152,6 +153,8 @@ int64_t icount_get(void)
         start = seqlock_read_begin(&timers_state.vm_clock_seqlock);
         icount = icount_get_locked();
     } while (seqlock_read_retry(&timers_state.vm_clock_seqlock, start));
+
+    qemu_log_mask(LOG_TIMER, "CPU get iclock: curr=%ld wclock=%ld\n", icount, get_clock());
 
     return icount;
 }

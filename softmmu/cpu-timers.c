@@ -37,6 +37,7 @@
 #include "sysemu/cpu-timers.h"
 #include "sysemu/cpu-throttle.h"
 #include "timers-state.h"
+#include "exec/log.h"
 
 /* clock and ticks */
 
@@ -97,6 +98,7 @@ int64_t cpu_get_clock(void)
         ti = cpu_get_clock_locked();
     } while (seqlock_read_retry(&timers_state.vm_clock_seqlock, start));
 
+    qemu_log_mask(LOG_TIMER, "CPU get clock: curr=%ld\n", ti);
     return ti;
 }
 

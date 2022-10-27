@@ -23,6 +23,8 @@ enum qemu_plugin_event {
     QEMU_PLUGIN_EV_VCPU_TB_TRANS,
     QEMU_PLUGIN_EV_VCPU_IDLE,
     QEMU_PLUGIN_EV_VCPU_RESUME,
+    QEMU_PLUGIN_EV_VCPU_INTERRUPT_ENTER,
+    QEMU_PLUGIN_EV_VCPU_INTERRUPT_LEAVE,
     QEMU_PLUGIN_EV_VCPU_SYSCALL,
     QEMU_PLUGIN_EV_VCPU_SYSCALL_RET,
     QEMU_PLUGIN_EV_FLUSH,
@@ -76,6 +78,7 @@ union qemu_plugin_cb_sig {
     qemu_plugin_vcpu_mem_cb_t        vcpu_mem;
     qemu_plugin_vcpu_syscall_cb_t    vcpu_syscall;
     qemu_plugin_vcpu_syscall_ret_cb_t vcpu_syscall_ret;
+    qemu_plugin_vcpu_interrupt_cb_t  vcpu_interrupt;
     void *generic;
 };
 
@@ -197,6 +200,8 @@ void qemu_plugin_vcpu_exit_hook(CPUState *cpu);
 void qemu_plugin_tb_trans_cb(CPUState *cpu, struct qemu_plugin_tb *tb);
 void qemu_plugin_vcpu_idle_cb(CPUState *cpu);
 void qemu_plugin_vcpu_resume_cb(CPUState *cpu);
+void qemu_plugin_vcpu_interrupt_enter_cb(CPUState *cpu, int intno, int is_hw);
+void qemu_plugin_vcpu_interrupt_leave_cb(CPUState *cpu, int intno, int is_hw);
 void
 qemu_plugin_vcpu_syscall(CPUState *cpu, int64_t num, uint64_t a1,
                          uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5,
@@ -255,6 +260,12 @@ static inline void qemu_plugin_vcpu_idle_cb(CPUState *cpu)
 { }
 
 static inline void qemu_plugin_vcpu_resume_cb(CPUState *cpu)
+{ }
+
+static inline void qemu_plugin_vcpu_interrupt_enter_cb(CPUState *cpu, int, int)
+{ }
+
+static inline void qemu_plugin_vcpu_interrupt_leave_cb(CPUState *cpu)
 { }
 
 static inline void
