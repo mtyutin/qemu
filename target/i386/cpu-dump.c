@@ -110,45 +110,45 @@ cpu_x86_dump_seg_cache(CPUX86State *env, FILE *f,
                      sc->flags & 0x00ffff00);
     }
 
-    if (!(env->hflags & HF_PE_MASK) || !(sc->flags & DESC_P_MASK))
-        goto done;
+//     if (!(env->hflags & HF_PE_MASK) || !(sc->flags & DESC_P_MASK))
+//         goto done;
 
-    qemu_fprintf(f, " DPL=%d ",
-                 (sc->flags & DESC_DPL_MASK) >> DESC_DPL_SHIFT);
-    if (sc->flags & DESC_S_MASK) {
-        if (sc->flags & DESC_CS_MASK) {
-            qemu_fprintf(f, (sc->flags & DESC_L_MASK) ? "CS64" :
-                         ((sc->flags & DESC_B_MASK) ? "CS32" : "CS16"));
-            qemu_fprintf(f, " [%c%c", (sc->flags & DESC_C_MASK) ? 'C' : '-',
-                         (sc->flags & DESC_R_MASK) ? 'R' : '-');
-        } else {
-            qemu_fprintf(f, (sc->flags & DESC_B_MASK
-                             || env->hflags & HF_LMA_MASK)
-                         ? "DS  " : "DS16");
-            qemu_fprintf(f, " [%c%c", (sc->flags & DESC_E_MASK) ? 'E' : '-',
-                         (sc->flags & DESC_W_MASK) ? 'W' : '-');
-        }
-        qemu_fprintf(f, "%c]", (sc->flags & DESC_A_MASK) ? 'A' : '-');
-    } else {
-        static const char *sys_type_name[2][16] = {
-            { /* 32 bit mode */
-                "Reserved", "TSS16-avl", "LDT", "TSS16-busy",
-                "CallGate16", "TaskGate", "IntGate16", "TrapGate16",
-                "Reserved", "TSS32-avl", "Reserved", "TSS32-busy",
-                "CallGate32", "Reserved", "IntGate32", "TrapGate32"
-            },
-            { /* 64 bit mode */
-                "<hiword>", "Reserved", "LDT", "Reserved", "Reserved",
-                "Reserved", "Reserved", "Reserved", "Reserved",
-                "TSS64-avl", "Reserved", "TSS64-busy", "CallGate64",
-                "Reserved", "IntGate64", "TrapGate64"
-            }
-        };
-        qemu_fprintf(f, "%s",
-                     sys_type_name[(env->hflags & HF_LMA_MASK) ? 1 : 0]
-                     [(sc->flags & DESC_TYPE_MASK) >> DESC_TYPE_SHIFT]);
-    }
-done:
+//     qemu_fprintf(f, " DPL=%d ",
+//                  (sc->flags & DESC_DPL_MASK) >> DESC_DPL_SHIFT);
+//     if (sc->flags & DESC_S_MASK) {
+//         if (sc->flags & DESC_CS_MASK) {
+//             qemu_fprintf(f, (sc->flags & DESC_L_MASK) ? "CS64" :
+//                          ((sc->flags & DESC_B_MASK) ? "CS32" : "CS16"));
+//             qemu_fprintf(f, " [%c%c", (sc->flags & DESC_C_MASK) ? 'C' : '-',
+//                          (sc->flags & DESC_R_MASK) ? 'R' : '-');
+//         } else {
+//             qemu_fprintf(f, (sc->flags & DESC_B_MASK
+//                              || env->hflags & HF_LMA_MASK)
+//                          ? "DS  " : "DS16");
+//             qemu_fprintf(f, " [%c%c", (sc->flags & DESC_E_MASK) ? 'E' : '-',
+//                          (sc->flags & DESC_W_MASK) ? 'W' : '-');
+//         }
+//         qemu_fprintf(f, "%c]", (sc->flags & DESC_A_MASK) ? 'A' : '-');
+//     } else {
+//         static const char *sys_type_name[2][16] = {
+//             { /* 32 bit mode */
+//                 "Reserved", "TSS16-avl", "LDT", "TSS16-busy",
+//                 "CallGate16", "TaskGate", "IntGate16", "TrapGate16",
+//                 "Reserved", "TSS32-avl", "Reserved", "TSS32-busy",
+//                 "CallGate32", "Reserved", "IntGate32", "TrapGate32"
+//             },
+//             { /* 64 bit mode */
+//                 "<hiword>", "Reserved", "LDT", "Reserved", "Reserved",
+//                 "Reserved", "Reserved", "Reserved", "Reserved",
+//                 "TSS64-avl", "Reserved", "TSS64-busy", "CallGate64",
+//                 "Reserved", "IntGate64", "TrapGate64"
+//             }
+//         };
+//         qemu_fprintf(f, "%s",
+//                      sys_type_name[(env->hflags & HF_LMA_MASK) ? 1 : 0]
+//                      [(sc->flags & DESC_TYPE_MASK) >> DESC_TYPE_SHIFT]);
+//     }
+// done:
     qemu_fprintf(f, "\n");
 }
 
@@ -355,11 +355,11 @@ void x86_cpu_dump_state(CPUState *cs, FILE *f, int flags)
     eflags = cpu_compute_eflags(env);
 #ifdef TARGET_X86_64
     if (env->hflags & HF_CS64_MASK) {
-        qemu_fprintf(f, "RAX=%016" PRIx64 " RBX=%016" PRIx64 " RCX=%016" PRIx64 " RDX=%016" PRIx64 "\n"
-                     "RSI=%016" PRIx64 " RDI=%016" PRIx64 " RBP=%016" PRIx64 " RSP=%016" PRIx64 "\n"
-                     "R8 =%016" PRIx64 " R9 =%016" PRIx64 " R10=%016" PRIx64 " R11=%016" PRIx64 "\n"
-                     "R12=%016" PRIx64 " R13=%016" PRIx64 " R14=%016" PRIx64 " R15=%016" PRIx64 "\n"
-                     "RIP=%016" PRIx64 " RFL=%08x [%c%c%c%c%c%c%c] CPL=%d II=%d A20=%d SMM=%d HLT=%d\n",
+        qemu_fprintf(f, "RAX=%016" PRIx64 "\nRBX=%016" PRIx64 "\nRCX=%016" PRIx64 "\nRDX=%016" PRIx64 "\n"
+                     "RSI=%016" PRIx64 "\nRDI=%016" PRIx64 "\nRBP=%016" PRIx64 "\nRSP=%016" PRIx64 "\n"
+                     "R8 =%016" PRIx64 "\nR9 =%016" PRIx64 "\nR10=%016" PRIx64 "\nR11=%016" PRIx64 "\n"
+                     "R12=%016" PRIx64 "\nR13=%016" PRIx64 "\nR14=%016" PRIx64 "\nR15=%016" PRIx64 "\n"
+                     "RIP=%016" PRIx64 "\nRFL=%08x [%c%c%c%c%c%c%c]\n",
                      env->regs[R_EAX],
                      env->regs[R_EBX],
                      env->regs[R_ECX],
@@ -383,12 +383,7 @@ void x86_cpu_dump_state(CPUState *cs, FILE *f, int flags)
                      eflags & CC_Z ? 'Z' : '-',
                      eflags & CC_A ? 'A' : '-',
                      eflags & CC_P ? 'P' : '-',
-                     eflags & CC_C ? 'C' : '-',
-                     env->hflags & HF_CPL_MASK,
-                     (env->hflags >> HF_INHIBIT_IRQ_SHIFT) & 1,
-                     (env->a20_mask >> 20) & 1,
-                     (env->hflags >> HF_SMM_SHIFT) & 1,
-                     cs->halted);
+                     eflags & CC_C ? 'C' : '-');
     } else
 #endif
     {
@@ -421,8 +416,8 @@ void x86_cpu_dump_state(CPUState *cs, FILE *f, int flags)
     for(i = 0; i < 6; i++) {
         cpu_x86_dump_seg_cache(env, f, seg_name[i], &env->segs[i]);
     }
-    cpu_x86_dump_seg_cache(env, f, "LDT", &env->ldt);
-    cpu_x86_dump_seg_cache(env, f, "TR", &env->tr);
+    // cpu_x86_dump_seg_cache(env, f, "LDT", &env->ldt);
+    // cpu_x86_dump_seg_cache(env, f, "TR", &env->tr);
 
 #ifdef TARGET_X86_64
     if (env->hflags & HF_LMA_MASK) {
@@ -430,14 +425,17 @@ void x86_cpu_dump_state(CPUState *cs, FILE *f, int flags)
                      env->gdt.base, env->gdt.limit);
         qemu_fprintf(f, "IDT=     %016" PRIx64 " %08x\n",
                      env->idt.base, env->idt.limit);
-        qemu_fprintf(f, "CR0=%08x CR2=%016" PRIx64 " CR3=%016" PRIx64 " CR4=%08x\n",
+        qemu_fprintf(f, "CR0=%08x\nCR2=%016" PRIx64 "\nCR3=%016" PRIx64 "\nCR4=%08x\n",
                      (uint32_t)env->cr[0],
                      env->cr[2],
                      env->cr[3],
                      (uint32_t)env->cr[4]);
-        for(i = 0; i < 4; i++)
+        for(i = 0; i < 4; i++) {
+            if(i != 0)
+                qemu_fprintf(f, "\n");
             qemu_fprintf(f, "DR%d=%016" PRIx64 " ", i, env->dr[i]);
-        qemu_fprintf(f, "\nDR6=%016" PRIx64 " DR7=%016" PRIx64 "\n",
+        }
+        qemu_fprintf(f, "\nDR6=%016" PRIx64 "\nDR7=%016" PRIx64 "\n",
                      env->dr[6], env->dr[7]);
     } else
 #endif
@@ -488,7 +486,7 @@ void x86_cpu_dump_state(CPUState *cs, FILE *f, int flags)
             fptag |= ((!env->fptags[i]) << i);
         }
         update_mxcsr_from_sse_status(env);
-        qemu_fprintf(f, "FCW=%04x FSW=%04x [ST=%d] FTW=%02x MXCSR=%08x\n",
+        qemu_fprintf(f, "FCW=%04x\nFSW=%04x [ST=%d]\nFTW=%02x\nMXCSR=%08x\n",
                      env->fpuc,
                      (env->fpus & ~0x3800) | (env->fpstt & 0x7) << 11,
                      env->fpstt,
@@ -499,10 +497,7 @@ void x86_cpu_dump_state(CPUState *cs, FILE *f, int flags)
             u.d = env->fpregs[i].d;
             qemu_fprintf(f, "FPR%d=%016" PRIx64 " %04x",
                          i, u.l.lower, u.l.upper);
-            if ((i & 1) == 1)
-                qemu_fprintf(f, "\n");
-            else
-                qemu_fprintf(f, " ");
+            qemu_fprintf(f, "\n");
         }
 
         if ((env->xcr0 & avx512_mask) == avx512_mask) {
