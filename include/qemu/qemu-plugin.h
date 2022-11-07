@@ -578,6 +578,7 @@ int qemu_plugin_n_max_vcpus(void);
  */
 void qemu_plugin_outs(const char *string);
 
+#define QEMU_PLUGIN_DUMP_CPU_STATE_ENABLED
 /**
  * qemu_dump_cpu_state() - output current CPU state via QEMU's logging system
   */
