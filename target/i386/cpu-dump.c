@@ -419,42 +419,42 @@ void x86_cpu_dump_state(CPUState *cs, FILE *f, int flags)
     // cpu_x86_dump_seg_cache(env, f, "LDT", &env->ldt);
     // cpu_x86_dump_seg_cache(env, f, "TR", &env->tr);
 
-#ifdef TARGET_X86_64
-    if (env->hflags & HF_LMA_MASK) {
-        qemu_fprintf(f, "GDT=     %016" PRIx64 " %08x\n",
-                     env->gdt.base, env->gdt.limit);
-        qemu_fprintf(f, "IDT=     %016" PRIx64 " %08x\n",
-                     env->idt.base, env->idt.limit);
-        qemu_fprintf(f, "CR0=%08x\nCR2=%016" PRIx64 "\nCR3=%016" PRIx64 "\nCR4=%08x\n",
-                     (uint32_t)env->cr[0],
-                     env->cr[2],
-                     env->cr[3],
-                     (uint32_t)env->cr[4]);
-        for(i = 0; i < 4; i++) {
-            if(i != 0)
-                qemu_fprintf(f, "\n");
-            qemu_fprintf(f, "DR%d=%016" PRIx64 " ", i, env->dr[i]);
-        }
-        qemu_fprintf(f, "\nDR6=%016" PRIx64 "\nDR7=%016" PRIx64 "\n",
-                     env->dr[6], env->dr[7]);
-    } else
-#endif
-    {
-        qemu_fprintf(f, "GDT=     %08x %08x\n",
-                     (uint32_t)env->gdt.base, env->gdt.limit);
-        qemu_fprintf(f, "IDT=     %08x %08x\n",
-                     (uint32_t)env->idt.base, env->idt.limit);
-        qemu_fprintf(f, "CR0=%08x CR2=%08x CR3=%08x CR4=%08x\n",
-                     (uint32_t)env->cr[0],
-                     (uint32_t)env->cr[2],
-                     (uint32_t)env->cr[3],
-                     (uint32_t)env->cr[4]);
-        for(i = 0; i < 4; i++) {
-            qemu_fprintf(f, "DR%d=" TARGET_FMT_lx " ", i, env->dr[i]);
-        }
-        qemu_fprintf(f, "\nDR6=" TARGET_FMT_lx " DR7=" TARGET_FMT_lx "\n",
-                     env->dr[6], env->dr[7]);
-    }
+// #ifdef TARGET_X86_64
+//     if (env->hflags & HF_LMA_MASK) {
+//         qemu_fprintf(f, "GDT=     %016" PRIx64 " %08x\n",
+//                      env->gdt.base, env->gdt.limit);
+//         qemu_fprintf(f, "IDT=     %016" PRIx64 " %08x\n",
+//                      env->idt.base, env->idt.limit);
+//         qemu_fprintf(f, "CR0=%08x\nCR2=%016" PRIx64 "\nCR3=%016" PRIx64 "\nCR4=%08x\n",
+//                      (uint32_t)env->cr[0],
+//                      env->cr[2],
+//                      env->cr[3],
+//                      (uint32_t)env->cr[4]);
+//         for(i = 0; i < 4; i++) {
+//             if(i != 0)
+//                 qemu_fprintf(f, "\n");
+//             qemu_fprintf(f, "DR%d=%016" PRIx64 " ", i, env->dr[i]);
+//         }
+//         qemu_fprintf(f, "\nDR6=%016" PRIx64 "\nDR7=%016" PRIx64 "\n",
+//                      env->dr[6], env->dr[7]);
+//     } else
+// #endif
+//     {
+//         qemu_fprintf(f, "GDT=     %08x %08x\n",
+//                      (uint32_t)env->gdt.base, env->gdt.limit);
+//         qemu_fprintf(f, "IDT=     %08x %08x\n",
+//                      (uint32_t)env->idt.base, env->idt.limit);
+//         qemu_fprintf(f, "CR0=%08x CR2=%08x CR3=%08x CR4=%08x\n",
+//                      (uint32_t)env->cr[0],
+//                      (uint32_t)env->cr[2],
+//                      (uint32_t)env->cr[3],
+//                      (uint32_t)env->cr[4]);
+//         for(i = 0; i < 4; i++) {
+//             qemu_fprintf(f, "DR%d=" TARGET_FMT_lx " ", i, env->dr[i]);
+//         }
+//         qemu_fprintf(f, "\nDR6=" TARGET_FMT_lx " DR7=" TARGET_FMT_lx "\n",
+//                      env->dr[6], env->dr[7]);
+//     }
     if (flags & CPU_DUMP_CCOP) {
         if ((unsigned)env->cc_op < CC_OP_NB)
             snprintf(cc_op_name, sizeof(cc_op_name), "%s", cc_op_str[env->cc_op]);
