@@ -2046,8 +2046,21 @@ void tcg_optimize(TCGContext *s)
 
         /* Calls are special. */
         if (opc == INDEX_op_call) {
-            fold_call(&ctx, op);
-            continue;
+           /* don't fold expressions in translation block if
+              there plugin instrumentation callback. The callback might use intermediate
+              values for its own purposes */
+
+            const TCGHelperInfo *info = tcg_call_info(op);
+            void *func = tcg_call_func(op);
+            if (func != info->func) {
+                /* this is a call to plugin */
+                finish_folding(&ctx, op);
+                return;
+            }
+            else {
+                fold_call(&ctx, op);
+                continue;
+            }
         }
 
         def = &tcg_op_defs[opc];
