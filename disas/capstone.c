@@ -64,6 +64,7 @@ static cs_err cap_disas_start(disassemble_info *info, csh *handle)
 {
     cs_mode cap_mode = info->cap_mode;
     cs_err err;
+    size_t cs_opt_syntax;
 
     cap_mode += (info->endian == BFD_ENDIAN_BIG ? CS_MODE_BIG_ENDIAN
                  : CS_MODE_LITTLE_ENDIAN);
@@ -89,7 +90,7 @@ static cs_err cap_disas_start(disassemble_info *info, csh *handle)
          * to deal with the Intel syntax.
          */
 
-        size_t cs_opt_syntax = CS_OPT_SYNTAX_ATT;
+        cs_opt_syntax = CS_OPT_SYNTAX_ATT;
         if (info->dis_syntax == QEMU_PLUGIN_DISAS_SYNTAX_INTEL) {
             cs_opt_syntax = CS_OPT_SYNTAX_INTEL;
         }
