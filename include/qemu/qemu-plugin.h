@@ -532,6 +532,7 @@ qemu_plugin_register_vcpu_syscall_ret_cb(qemu_plugin_id_t id,
 
 char *qemu_plugin_insn_disas(const struct qemu_plugin_insn *insn);
 
+#define QEMU_PLUGIN_DISAS_SYNTAX_ENABLED
 /**
  * qemu_plugin_insn_disas_with_syntax() - return disassembly string for instruction
  * @insn: instruction reference
