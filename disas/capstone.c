@@ -50,6 +50,20 @@ static const cs_opt_skipdata cap_skipdata_s390x = {
     .callback = cap_skipdata_s390x_cb
 };
 
+static cs_opt_value cap_get_disas_syntax(disassemble_info *info) {
+    switch (info->dis_syntax) {
+    case QEMU_PLUGIN_DISAS_SYNTAX_INTEL:
+        return CS_OPT_SYNTAX_INTEL;
+
+    case QEMU_PLUGIN_DISAS_SYNTAX_MASM:
+        return CS_OPT_SYNTAX_MASM;
+
+    case QEMU_PLUGIN_DISAS_SYNTAX_ATT:
+    default:
+        return CS_OPT_SYNTAX_ATT;
+    }
+}
+
 /*
  * Initialize the Capstone library.
  *
@@ -64,7 +78,7 @@ static cs_err cap_disas_start(disassemble_info *info, csh *handle)
 {
     cs_mode cap_mode = info->cap_mode;
     cs_err err;
-    size_t cs_opt_syntax;
+    cs_opt_value cap_dis_syntax;
 
     cap_mode += (info->endian == BFD_ENDIAN_BIG ? CS_MODE_BIG_ENDIAN
                  : CS_MODE_LITTLE_ENDIAN);
@@ -90,12 +104,8 @@ static cs_err cap_disas_start(disassemble_info *info, csh *handle)
          * to deal with the Intel syntax.
          */
 
-        cs_opt_syntax = CS_OPT_SYNTAX_ATT;
-        if (info->dis_syntax == QEMU_PLUGIN_DISAS_SYNTAX_INTEL) {
-            cs_opt_syntax = CS_OPT_SYNTAX_INTEL;
-        }
-
-        cs_option(*handle, CS_OPT_SYNTAX, cs_opt_syntax);
+        cap_dis_syntax = cap_get_disas_syntax(info);
+        cs_option(*handle, CS_OPT_SYNTAX, cap_dis_syntax);
         break;
     }
 
